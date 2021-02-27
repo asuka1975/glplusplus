@@ -72,6 +72,19 @@ namespace gl {
             glBindBuffer(buffer_target, m_handle);
             glBufferData(buffer_target, sizeof(value_type) * data.size(), data.data(), buffer_usage);
         }
+        vertex_buffer(const vertex_buffer<Traits>&) = delete;
+        vertex_buffer(vertex_buffer<Traits>&& obj)  noexcept : data(std::move(obj.data)), m_handle(obj.m_handle) {
+            obj.m_handle = 0;
+        }
+        vertex_buffer<Traits>& operator=(const vertex_buffer<Traits>&) = delete;
+        vertex_buffer<Traits>& operator=(vertex_buffer<Traits>&& obj) noexcept {
+            if(this != &obj) {
+                data = std::move(obj.data);
+                glDeleteBuffers(1, &m_handle);
+                m_handle = obj.m_handle;
+                obj.m_handle = 0;
+            }
+        }
         ~vertex_buffer() {
             if(m_handle) {
                 glDeleteBuffers(1, &m_handle);
