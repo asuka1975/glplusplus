@@ -3,6 +3,6 @@ project(gl++)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_library(gl++ src/vertex_buffer.cpp)
+add_library(gl++ src/vertex_buffer.cpp src/vertex_array.cpp)
 
 target_include_directories(gl++ PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
