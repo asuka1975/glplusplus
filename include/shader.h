@@ -19,7 +19,7 @@ namespace gl {
         [[nodiscard]] bool enabled() const noexcept;
         [[nodiscard]] GLuint handle() const noexcept;
         void reset();
-        bool add_shader(const std::string &file, GLenum type);
+        bool add_shader(const std::string &source, GLenum type);
         bool link();
         void use() const;
         void unuse() const;
