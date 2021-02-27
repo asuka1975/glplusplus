@@ -8,7 +8,6 @@
 #include <functional>
 
 #include <GL/glew.h>
-#include <GL/gl.h>
 
 namespace gl {
     class vertex_array {

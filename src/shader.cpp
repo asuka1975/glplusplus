@@ -3,9 +3,7 @@
 //
 #include "shader.h"
 
-#include <fstream>
 #include <iostream>
-#include <vector>
 
 gl::shader_program::shader_program() {
     m_handle = glCreateProgram();
