@@ -38,17 +38,11 @@ void gl::shader_program::reset() {
     }
 }
 
-bool gl::shader_program::add_shader(const std::string &file, GLenum type) {
+bool gl::shader_program::add_shader(const std::string &src, GLenum type) {
     if(!enabled()) return false;
-    std::ifstream fin(file);
-    if(fin.fail()) {
-        std::cerr << "failed to open " << file << std::endl;
-    }
-    std::vector<GLchar> content;
-    std::copy(std::istreambuf_iterator<GLchar>(fin), std::istreambuf_iterator<GLchar>(), std::back_inserter(content));
     GLuint shader = glCreateShader(type);
-    auto source = content.data();
-    GLint length = content.size();
+    auto source = src.data();
+    GLint length = src.size();
     glShaderSource(shader, 1, &source, &length);
     glCompileShader(shader);
 
