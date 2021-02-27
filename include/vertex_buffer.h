@@ -10,7 +10,6 @@
 #include <vector>
 
 #include <GL/glew.h>
-#include <GL/gl.h>
 
 #include "primitive_type.h"
 
