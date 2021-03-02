@@ -53,6 +53,10 @@ namespace gl {
     class this_select_t {};
     static inline constexpr this_select_t this_select;
 
+    class class_t{};
+    template <class T>
+    using value_t = std::conditional_t<std::is_class_v<T>, T, class_t>;
+
     template <class Traits>
     class vertex_buffer {
     public:
@@ -96,7 +100,7 @@ namespace gl {
                                   gl_primitive_type<value_type>::value, normalized, 0, 0);
         }
         template <class T>
-        void vertex_pointer(GLuint location, GLboolean normalized, T value_type::*member) {
+        void vertex_pointer(GLuint location, GLboolean normalized, T value_t<value_type>::*member) {
             glEnableVertexAttribArray(location);
             auto start = reinterpret_cast<std::size_t>(&reinterpret_cast<char const volatile&>(((value_type*)nullptr)->*member));
             glVertexAttribPointer(location, sizeof(T) / sizeof(typename gl_primitive_type<T>::type),
