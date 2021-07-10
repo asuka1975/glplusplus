@@ -138,7 +138,7 @@ namespace gl {
             modify(0, begin, end);
         }
         template <class Iterator>
-        auto extend(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_input_iterator_v<Iterator>> {
+        auto extend(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) {
             auto size = std::distance(begin, end) + offset;
             auto expect_size = size;
             if(size > m_size) {
