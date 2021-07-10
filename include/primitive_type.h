@@ -17,6 +17,21 @@ namespace gl {
         inline static constexpr GLenum value = non_value<T>::value;
     };
     template <>
+    struct gl_primitive_type<GLuint> {
+        using type = GLuint;
+        inline static constexpr  GLenum value = GL_UNSIGNED_INT;
+    };
+    template <>
+    struct gl_primitive_type<GLushort> {
+        using type = GLuint;
+        inline static constexpr GLenum value = GL_UNSIGNED_SHORT;
+    };
+    template <>
+    struct gl_primitive_type<GLubyte> {
+        using type = GLuint;
+        inline static constexpr GLenum value = GL_UNSIGNED_BYTE;
+    };
+    template <>
     struct gl_primitive_type<GLfloat> {
         using type = GLfloat;
         inline static constexpr GLenum value = GL_FLOAT;
