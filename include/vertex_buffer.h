@@ -158,6 +158,9 @@ namespace gl {
             }
             modify(offset, begin, end);
         }
+        [[nodiscard]] std::size_t size() const noexcept {
+            return m_size;
+        }
     private:
         std::size_t m_size;
         GLuint m_handle;
