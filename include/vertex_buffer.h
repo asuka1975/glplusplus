@@ -161,6 +161,21 @@ namespace gl {
         [[nodiscard]] std::size_t size() const noexcept {
             return m_size;
         }
+        template <class Iterator>
+        auto get(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_input_iterator_v<Iterator>> {
+            bind();
+            std::vector<value_type> data(begin, end);
+            glGetBufferSubData(buffer_target, offset, data.size() * sizeof(value_type), data.data());
+        }
+        template <class Iterator>
+        auto get(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_random_access_iterator_v<Iterator>> {
+            bind();
+            glGetBufferSubData(buffer_target, offset, std::distance(begin, end), begin);
+        }
+        template <class Iterator>
+        void get(const Iterator& begin, const Iterator& end) {
+            get(0, begin, end);
+        }
     private:
         std::size_t m_size;
         GLuint m_handle;
