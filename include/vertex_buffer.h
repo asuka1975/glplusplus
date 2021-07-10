@@ -74,16 +74,9 @@ namespace gl {
                 std::is_base_of<std::random_access_iterator_tag, typename IteratorTraits::iterator_category>,
                 std::is_convertible<typename IteratorTraits::value_type, value_type>>;
     public:
-        template <class Iterator>
-        vertex_buffer(const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_input_iterator_v<Iterator>> : m_size(std::distance(begin, end)), m_handle(0)
+        template <class Iterator, class=std::enable_if_t<is_input_iterator_v<Iterator> || is_random_access_iterator_v<Iterator>>>
+        vertex_buffer(const Iterator& begin, const Iterator& end): m_size(std::distance(begin, end)), m_handle(0)
         {
-            std::vector<value_type> data(begin, end);
-            glGenBuffers(1, &m_handle);
-            glBindBuffer(buffer_target, m_handle);
-            glBufferData(buffer_target, sizeof(value_type) * data.size(), data.data(), buffer_usage);
-        }
-        template <class Iterator>
-        vertex_buffer(const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_random_access_iterator_v<Iterator>> : m_size(std::distance(begin, end)), m_handle(0) {
             std::vector<value_type> data(begin, end);
             glGenBuffers(1, &m_handle);
             glBindBuffer(buffer_target, m_handle);
@@ -182,7 +175,7 @@ namespace gl {
         template <class Iterator>
         auto get(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_random_access_iterator_v<Iterator>> {
             bind();
-            glGetBufferSubData(buffer_target, offset, std::distance(begin, end), begin);
+            glGetBufferSubData(buffer_target, offset, std::distance(begin, end) * sizeof(value_type), &*begin);
         }
         template <class Iterator>
         void get(const Iterator& begin, const Iterator& end) {
