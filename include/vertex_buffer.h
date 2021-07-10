@@ -144,7 +144,7 @@ namespace gl {
         auto extend(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) {
             auto size = std::distance(begin, end) + offset;
             auto expect_size = size;
-            if(size > m_size) {
+            if(size > m_capacity) {
                 for(std::size_t i = 1; i != expect_size; ) {
                     if(i < expect_size) i <<= 1;
                     if(i > expect_size) expect_size = i;
@@ -162,9 +162,9 @@ namespace gl {
                 glBindBuffer(GL_COPY_WRITE_BUFFER, m_handle);
                 glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, m_size * sizeof(value_type));
                 glDeleteBuffers(1, &vbo);
-                m_size = size;
                 m_capacity = expect_size;
             }
+            m_size = size;
             modify(offset, begin, end);
         }
         template <class Iterator>
