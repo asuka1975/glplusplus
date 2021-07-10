@@ -123,15 +123,19 @@ namespace gl {
             glBindBuffer(buffer_target, 0);
         }
         template <class Iterator>
-        auto modify(const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_input_iterator_v<Iterator>> {
+        auto modify(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_input_iterator_v<Iterator>> {
             bind();
             std::vector<value_type> data(begin, end);
-            glBufferSubData(buffer_target, 0, data.size() * sizeof(value_type), data.data());
+            glBufferSubData(buffer_target, offset * sizeof(value_type), data.size() * sizeof(value_type), data.data());
         }
         template <class Iterator>
-        auto modify(const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_random_access_iterator_v<Iterator>> {
+        auto modify(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_random_access_iterator_v<Iterator>> {
             bind();
-            glBufferSubData(buffer_target, 0, std::distance(begin, end) * sizeof(value_type), begin);
+            glBufferSubData(buffer_target, offset * sizeof(value_type), std::distance(begin, end) * sizeof(value_type), begin);
+        }
+        template <class Iterator>
+        void modify(const Iterator& begin, const Iterator& end) {
+            modify(0, begin, end);
         }
     private:
         std::size_t m_size;
