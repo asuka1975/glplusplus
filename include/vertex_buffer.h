@@ -127,12 +127,13 @@ namespace gl {
         auto modify(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_input_iterator_v<Iterator>> {
             bind();
             std::vector<value_type> data(begin, end);
-            glBufferSubData(buffer_target, offset * sizeof(value_type), data.size() * sizeof(value_type), data.data());
+            modify(offset, data.begin(), data.end());
         }
         template <class Iterator>
         auto modify(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_random_access_iterator_v<Iterator>> {
             bind();
-            glBufferSubData(buffer_target, offset * sizeof(value_type), std::distance(begin, end) * sizeof(value_type), begin);
+            auto size = std::distance(begin, end);
+            glBufferSubData(buffer_target, offset * sizeof(value_type), sizeof(value_type) * (size + offset >= m_size ? m_size - offset : size), &*begin);
         }
         template <class Iterator>
         void modify(const Iterator& begin, const Iterator& end) {
