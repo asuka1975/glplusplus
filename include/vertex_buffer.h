@@ -156,6 +156,7 @@ namespace gl {
                 glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, m_size * sizeof(value_type));
                 glDeleteBuffers(1, m_handle);
                 m_handle = vbo;
+                m_size = expect_size;
             }
             modify(offset, begin, end);
         }
