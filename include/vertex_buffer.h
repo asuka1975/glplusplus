@@ -169,7 +169,7 @@ namespace gl {
         }
         template <class Iterator>
         auto extend(const Iterator& begin, const Iterator& end) {
-            extend(m_size * sizeof(value_type), begin, end);
+            extend(m_size, begin, end);
         }
         [[nodiscard]] std::size_t size() const noexcept {
             return m_size;
