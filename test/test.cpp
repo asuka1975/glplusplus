@@ -115,7 +115,28 @@ TEST(BUFFER_MODIFY, BUFFER_TEST) {
 }
 
 TEST(BUFFER_EXTEND, BUFFER_TEST) {
+    std::vector<float> data { 1, 2, 3 };
+    std::vector<float> buffer(6);
+    gl::vertex_buffer<gl::buffer_trait<float, GL_ARRAY_BUFFER, GL_STATIC_DRAW>> vbo(data.begin(), data.end());
 
+    std::vector<float> extend1 { 4, 5, 6 };
+    vbo.extend(extend1.begin(), extend1.end());
+    vbo.get(buffer.begin(), buffer.end());
+    for(std::size_t i = 0; i < data.size(); i++) {
+        EXPECT_EQ(buffer[i], data[i]);
+        EXPECT_EQ(buffer[i + 3], extend1[i]);
+    }
+    EXPECT_EQ(vbo.size(), 8);
+
+    std::vector<float> extend2 { 7, 8, 9 };
+    std::vector<float> answer2 { 1, 2, 3, 4, 5, 7, 8, 9 };
+    buffer.resize(answer2.size());
+    vbo.extend(5, extend2.begin(), extend2.end());
+    vbo.get(buffer.begin(), buffer.end());
+    for(std::size_t i = 0; i < buffer.size(); i++) {
+        EXPECT_EQ(buffer[i], answer2[i]);
+    }
+    EXPECT_EQ(vbo.size(), 8);
 }
 
 int main(int argc, char **argv) {

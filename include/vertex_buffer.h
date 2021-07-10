@@ -151,12 +151,16 @@ namespace gl {
                 GLuint vbo;
                 glGenBuffers(1, &vbo);
                 glBindBuffer(buffer_target, vbo);
-                glBufferData(buffer_target, expect_size * sizeof(value_type), nullptr, buffer_usage);
+                glBufferData(buffer_target, m_size * sizeof(value_type), nullptr, buffer_usage);
                 glBindBuffer(GL_COPY_READ_BUFFER, m_handle);
                 glBindBuffer(GL_COPY_WRITE_BUFFER, vbo);
                 glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, m_size * sizeof(value_type));
-                glDeleteBuffers(1, m_handle);
-                m_handle = vbo;
+                glBindBuffer(buffer_target, m_handle);
+                glBufferData(buffer_target, expect_size * sizeof(value_type), nullptr, buffer_usage);
+                glBindBuffer(GL_COPY_READ_BUFFER, vbo);
+                glBindBuffer(GL_COPY_WRITE_BUFFER, m_handle);
+                glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, m_size * sizeof(value_type));
+                glDeleteBuffers(1, &vbo);
                 m_size = expect_size;
             }
             modify(offset, begin, end);
