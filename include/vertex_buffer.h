@@ -170,13 +170,19 @@ namespace gl {
         template <class Iterator>
         auto get(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_input_iterator_v<Iterator>> {
             bind();
-            std::vector<value_type> data(begin, end);
-            glGetBufferSubData(buffer_target, offset, data.size() * sizeof(value_type), data.data());
+            auto size = std::distance(begin, end);
+            std::vector<value_type> data(size);
+            get(offset, data.begin(), data.end());
+            std::copy(data.begin(), data.end(), begin);
         }
         template <class Iterator>
         auto get(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_random_access_iterator_v<Iterator>> {
             bind();
-            glGetBufferSubData(buffer_target, offset, std::distance(begin, end) * sizeof(value_type), &*begin);
+            if(offset >= m_size) return;
+            else {
+                auto size = std::distance(begin, end);
+                glGetBufferSubData(buffer_target, offset * sizeof(value_type), sizeof(value_type) * (size + offset > m_size ? m_size - offset : size), &*begin);
+            }
         }
         template <class Iterator>
         void get(const Iterator& begin, const Iterator& end) {
