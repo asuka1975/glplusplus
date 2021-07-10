@@ -68,6 +68,56 @@ TEST(BUFFER_READ, BUFFER_TEST) {
     }
 }
 
+TEST(BUFFER_MODIFY, BUFFER_TEST) {
+    std::vector<float> data { 1, 2, 3 };
+    std::vector<float> buffer(3);
+
+    gl::vertex_buffer<gl::buffer_trait<float, GL_ARRAY_BUFFER, GL_STATIC_DRAW>> vbo(data.begin(), data.end());
+    // update whole buffer
+    std::vector<float> modify1 { 2, 3, 4 };
+    vbo.modify(modify1.begin(), modify1.end());
+    vbo.get(buffer.begin(), buffer.end());
+    for(std::size_t i = 0; i < buffer.size(); i++) {
+        EXPECT_EQ(buffer[i], modify1[i]);
+    }
+
+    vbo.modify(data.begin(), data.end());
+
+    // update a part of buffer
+    std::vector<float> modify2 { 3, 4 };
+    vbo.modify(1, modify2.begin(), modify2.end());
+    vbo.get(buffer.begin(), buffer.end());
+    EXPECT_EQ(buffer[0], data[0]);
+    for(std::size_t i = 1; i < buffer.size(); i++) {
+        EXPECT_EQ(buffer[i], modify2[i - 1]);
+    }
+
+    vbo.modify(data.begin(), data.end());
+
+    // update slided buffer
+    std::vector<float> modify3 { 3, 4, 5 };
+    vbo.modify(1, modify3.begin(), modify3.end());
+    vbo.get(buffer.begin(), buffer.end());
+    EXPECT_EQ(buffer[0], data[0]);
+    for(std::size_t i = 1; i < buffer.size(); i++) {
+        EXPECT_EQ(buffer[i], modify3[i - 1]);
+    }
+
+    vbo.modify(data.begin(), data.end());
+
+    // update mismatch offset
+    std::vector<float> modify4 { 3, 4, 5 };
+    vbo.modify(3, modify4.begin(), modify4.end());
+    vbo.get(buffer.begin(), buffer.end());
+    for(std::size_t i = 0; i < buffer.size(); i++) {
+        EXPECT_EQ(buffer[i], data[i]);
+    }
+}
+
+TEST(BUFFER_EXTEND, BUFFER_TEST) {
+
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
 
