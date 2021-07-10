@@ -64,25 +64,31 @@ namespace gl {
         static constexpr GLenum buffer_target = Traits::target;
         static constexpr GLenum buffer_usage = Traits::usage;
     private:
-        template <class Iterator>
+        template <class Iterator, class IteratorTraits=std::iterator_traits<Iterator>>
         static constexpr bool is_input_iterator_v = std::conjunction_v<
-                std::is_base_of<std::input_iterator_tag, typename std::iterator_traits<Iterator>::iterator_category>,
-                std::is_convertible<typename std::iterator_traits<Iterator>::value_type, value_type>>;
+                std::is_base_of<std::input_iterator_tag, typename IteratorTraits::iterator_category>,
+                std::is_convertible<typename IteratorTraits::value_type, value_type>,
+                std::negation<std::is_base_of<std::random_access_iterator_tag, typename IteratorTraits::iterator_category>>>;
+        template <class Iterator, class IteratorTraits=std::iterator_traits<Iterator>>
+        static constexpr bool is_random_access_iterator_v = std::conjunction_v<
+                std::is_base_of<std::random_access_iterator_tag, typename IteratorTraits::iterator_category>,
+                std::is_convertible<typename IteratorTraits::value_type, value_type>>;
     public:
         template <class Iterator, class=std::enable_if_t<is_input_iterator_v<Iterator>>>
-        vertex_buffer(const Iterator& begin, const Iterator& end) : data(begin, end), m_handle(0) {
+        vertex_buffer(const Iterator& begin, const Iterator& end) : m_size(std::distance(begin, end)), m_handle(0) {
+            std::vector<value_type> data(begin, end);
             glGenBuffers(1, &m_handle);
             glBindBuffer(buffer_target, m_handle);
             glBufferData(buffer_target, sizeof(value_type) * data.size(), data.data(), buffer_usage);
         }
         vertex_buffer(const vertex_buffer<Traits>&) = delete;
-        vertex_buffer(vertex_buffer<Traits>&& obj)  noexcept : data(std::move(obj.data)), m_handle(obj.m_handle) {
+        vertex_buffer(vertex_buffer<Traits>&& obj)  noexcept : m_size(obj.m_size), m_handle(obj.m_handle) {
             obj.m_handle = 0;
         }
         vertex_buffer<Traits>& operator=(const vertex_buffer<Traits>&) = delete;
         vertex_buffer<Traits>& operator=(vertex_buffer<Traits>&& obj) noexcept {
             if(this != &obj) {
-                data = std::move(obj.data);
+                m_size = obj.m_size;
                 glDeleteBuffers(1, &m_handle);
                 m_handle = obj.m_handle;
                 obj.m_handle = 0;
@@ -116,19 +122,19 @@ namespace gl {
         void unbind() {
             glBindBuffer(buffer_target, 0);
         }
-        template <class Iterator, class=std::enable_if_t<is_input_iterator_v<Iterator>>>
-        void modify(const Iterator& begin, const Iterator& end) {
+        template <class Iterator>
+        auto modify(const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_input_iterator_v<Iterator>> {
             bind();
-            auto* d = reinterpret_cast<value_type*>(glMapBufferRange(GL_ARRAY_BUFFER, 0, data.size() * sizeof(value_type), GL_WRITE_ONLY));
-            std::size_t j = 0;
-            for(auto i = begin; i != end; std::advance(i, 1)) {
-                d[j] = *i;
-                j++;
-                if(j < data.size()) break;
-            }
+            std::vector<value_type> data(begin, end);
+            glBufferSubData(buffer_target, 0, data.size() * sizeof(value_type), data.data());
+        }
+        template <class Iterator>
+        auto modify(const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_random_access_iterator_v<Iterator>> {
+            bind();
+            glBufferSubData(buffer_target, 0, std::distance(begin, end) * sizeof(value_type), begin);
         }
     private:
-        std::vector<value_type> data;
+        std::size_t m_size;
         GLuint m_handle;
     };
 }
