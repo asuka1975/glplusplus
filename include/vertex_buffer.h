@@ -77,6 +77,7 @@ namespace gl {
         template <class Iterator, class=std::enable_if_t<is_input_iterator_v<Iterator> || is_random_access_iterator_v<Iterator>>>
         vertex_buffer(const Iterator& begin, const Iterator& end): m_size(std::distance(begin, end)), m_handle(0)
         {
+            m_capacity = m_size;
             std::vector<value_type> data(begin, end);
             glGenBuffers(1, &m_handle);
             glBindBuffer(buffer_target, m_handle);
@@ -161,7 +162,8 @@ namespace gl {
                 glBindBuffer(GL_COPY_WRITE_BUFFER, m_handle);
                 glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, m_size * sizeof(value_type));
                 glDeleteBuffers(1, &vbo);
-                m_size = expect_size;
+                m_size = size;
+                m_capacity = expect_size;
             }
             modify(offset, begin, end);
         }
@@ -171,6 +173,9 @@ namespace gl {
         }
         [[nodiscard]] std::size_t size() const noexcept {
             return m_size;
+        }
+        [[nodiscard]] std::size_t capacity() const noexcept {
+            return m_capacity;
         }
         template <class Iterator>
         auto get(std::ptrdiff_t offset, const Iterator& begin, const Iterator& end) -> std::enable_if_t<is_input_iterator_v<Iterator>> {
@@ -195,6 +200,7 @@ namespace gl {
         }
     private:
         std::size_t m_size;
+        std::size_t m_capacity;
         GLuint m_handle;
     };
 }
