@@ -104,16 +104,29 @@ namespace gl {
         }
         void vertex_pointer(GLuint location, GLboolean normalized, this_select_t this_) {
             glEnableVertexAttribArray(location);
-            glVertexAttribPointer(location, sizeof(value_type) / sizeof(typename gl_primitive_type<value_type>::type),
-                                  gl_primitive_type<value_type>::value, normalized, 0, 0);
+            auto size = sizeof(value_type) / sizeof(typename gl_primitive_type<value_type>::type);
+            auto type = gl_primitive_type<value_type>::value;
+            if constexpr(std::is_integral_v<value_type>) {
+                glVertexAttribIPointer(location, size, type, 0, 0);
+            } else if constexpr(std::is_same_v<value_type, GLfloat>) {
+                glVertexAttribPointer(location, size, type, normalized, 0, 0);
+            } else if constexpr(std::is_same_v<value_type, GLdouble>) {
+                glVertexAttribLPointer(location, size, type, 0, 0);
+            }
         }
         template <class T>
         void vertex_pointer(GLuint location, GLboolean normalized, T value_t<value_type>::*member) {
             glEnableVertexAttribArray(location);
             auto start = reinterpret_cast<std::size_t>(&reinterpret_cast<char const volatile&>(((value_type*)nullptr)->*member));
-            glVertexAttribPointer(location, sizeof(T) / sizeof(typename gl_primitive_type<T>::type),
-                                  gl_primitive_type<T>::value, normalized, sizeof(value_type),
-                                  reinterpret_cast<void*>(start));
+            auto size = sizeof(T) / sizeof(typename gl_primitive_type<T>::type);
+            auto type = gl_primitive_type<T>::value;
+            if constexpr(std::is_integral_v<T>) {
+                glVertexAttribIPointer(location, size, type, sizeof(value_type), reinterpret_cast<void*>(start));
+            } else if constexpr(std::is_same_v<T, GLfloat>) {
+                glVertexAttribPointer(location, size, type, normalized, sizeof(value_type), reinterpret_cast<void*>(start));
+            } else if constexpr(std::is_same_v<T, GLdouble>) {
+                glVertexAttribLPointer(location, size, type, sizeof(value_type), reinterpret_cast<void*>(start));
+            }
         }
         [[nodiscard]] GLuint handle() const noexcept {
             return m_handle;
