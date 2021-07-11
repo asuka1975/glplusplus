@@ -23,12 +23,12 @@ namespace gl {
     };
     template <>
     struct gl_primitive_type<GLushort> {
-        using type = GLuint;
+        using type = GLushort;
         inline static constexpr GLenum value = GL_UNSIGNED_SHORT;
     };
     template <>
     struct gl_primitive_type<GLubyte> {
-        using type = GLuint;
+        using type = GLubyte;
         inline static constexpr GLenum value = GL_UNSIGNED_BYTE;
     };
     template <>
