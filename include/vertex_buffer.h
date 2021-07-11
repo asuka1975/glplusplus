@@ -106,7 +106,7 @@ namespace gl {
             glEnableVertexAttribArray(location);
             auto size = sizeof(value_type) / sizeof(typename gl_primitive_type<value_type>::type);
             auto type_value = gl_primitive_type<value_type>::value;
-            using type = typename gl_primitive_type<value_type>::type;
+            using type = std::remove_cv_t<typename gl_primitive_type<value_type>::type>;
             if constexpr(std::is_integral_v<type>) {
                 glVertexAttribIPointer(location, size, type_value, 0, 0);
             } else if constexpr(std::is_same_v<type, GLfloat>) {
@@ -121,7 +121,7 @@ namespace gl {
             auto start = reinterpret_cast<std::size_t>(&reinterpret_cast<char const volatile&>(((value_type*)nullptr)->*member));
             auto size = sizeof(T) / sizeof(typename gl_primitive_type<T>::type);
             auto type_value = gl_primitive_type<T>::value;
-            using type = typename gl_primitive_type<value_type>::type;
+            using type = std::remove_cv_t<typename gl_primitive_type<value_type>::type>;
             if constexpr(std::is_integral_v<type>) {
                 glVertexAttribIPointer(location, size, type_value, sizeof(value_type), reinterpret_cast<void*>(start));
             } else if constexpr(std::is_same_v<type, GLfloat>) {
