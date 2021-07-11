@@ -84,13 +84,14 @@ namespace gl {
             glBufferData(buffer_target, sizeof(value_type) * data.size(), data.data(), buffer_usage);
         }
         vertex_buffer(const vertex_buffer<Traits>&) = delete;
-        vertex_buffer(vertex_buffer<Traits>&& obj)  noexcept : m_size(obj.m_size), m_handle(obj.m_handle) {
+        vertex_buffer(vertex_buffer<Traits>&& obj)  noexcept : m_size(obj.m_size), m_capacity(obj.m_capacity), m_handle(obj.m_handle) {
             obj.m_handle = 0;
         }
         vertex_buffer<Traits>& operator=(const vertex_buffer<Traits>&) = delete;
         vertex_buffer<Traits>& operator=(vertex_buffer<Traits>&& obj) noexcept {
             if(this != &obj) {
                 m_size = obj.m_size;
+                m_capacity = obj.m_capacity;
                 glDeleteBuffers(1, &m_handle);
                 m_handle = obj.m_handle;
                 obj.m_handle = 0;
