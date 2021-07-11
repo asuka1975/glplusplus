@@ -11,7 +11,7 @@
 
 #include <GL/glew.h>
 
-#include "primitive_type.h"
+#include "gl++/primitive_type.h"
 
 namespace gl {
     template <GLenum V>

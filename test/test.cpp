@@ -5,7 +5,7 @@
 
 #include <list>
 
-#include "vertex_buffer.h"
+#include "gl++/vertex_buffer.h"
 
 #include <GLFW/glfw3.h>
 

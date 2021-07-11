@@ -1,7 +1,7 @@
 //
 // Created by hungr on 2021/02/27.
 //
-#include "vertex_array.h"
+#include "gl++/vertex_array.h"
 
 
 gl::vertex_array::bind_context::bind_context(std::reference_wrapper<const vertex_array> ref) : array(ref) {
