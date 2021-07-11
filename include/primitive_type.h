@@ -19,7 +19,12 @@ namespace gl {
     template <>
     struct gl_primitive_type<GLuint> {
         using type = GLuint;
-        inline static constexpr  GLenum value = GL_UNSIGNED_INT;
+        inline static constexpr GLenum value = GL_UNSIGNED_INT;
+    };
+    template <>
+    struct gl_primitive_type<GLint> {
+        using type =GLint;
+        inline static constexpr GLenum value = GL_INT;
     };
     template <>
     struct gl_primitive_type<GLushort> {
@@ -27,9 +32,19 @@ namespace gl {
         inline static constexpr GLenum value = GL_UNSIGNED_SHORT;
     };
     template <>
+    struct gl_primitive_type<GLshort> {
+        using type = GLshort;
+        inline static constexpr GLenum value = GL_SHORT;
+    };
+    template <>
     struct gl_primitive_type<GLubyte> {
         using type = GLubyte;
         inline static constexpr GLenum value = GL_UNSIGNED_BYTE;
+    };
+    template <>
+    struct gl_primitive_type<GLbyte> {
+        using type = GLbyte;
+        inline static constexpr GLenum value = GL_BYTE;
     };
     template <>
     struct gl_primitive_type<GLfloat> {
@@ -37,19 +52,14 @@ namespace gl {
         inline static constexpr GLenum value = GL_FLOAT;
     };
     template <>
-    struct gl_primitive_type<glm::vec2> {
-        using type = GLfloat;
-        inline static constexpr GLenum value = GL_FLOAT;
+    struct gl_primitive_type<GLdouble> {
+        using type = GLdouble;
+        inline static constexpr GLenum value = GL_DOUBLE;
     };
-    template <>
-    struct gl_primitive_type<glm::vec3> {
-        using type = GLfloat;
-        inline static constexpr GLenum value = GL_FLOAT;
-    };
-    template <>
-    struct gl_primitive_type<glm::vec4> {
-        using type = GLfloat;
-        inline static constexpr GLenum value = GL_FLOAT;
+    template <glm::length_t C, class T, glm::qualifier Q>
+    struct gl_primitive_type<glm::vec<C, T, Q>> {
+        using type = T;
+        inline static constexpr GLenum value = gl_primitive_type<T>::value;
     };
 }
 
