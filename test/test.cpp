@@ -126,7 +126,8 @@ TEST(BUFFER_EXTEND, BUFFER_TEST) {
         EXPECT_EQ(buffer[i], data[i]);
         EXPECT_EQ(buffer[i + 3], extend1[i]);
     }
-    EXPECT_EQ(vbo.size(), 8);
+    EXPECT_EQ(vbo.size(), 6);
+    EXPECT_EQ(vbo.capacity(), 8);
 
     std::vector<float> extend2 { 7, 8, 9 };
     std::vector<float> answer2 { 1, 2, 3, 4, 5, 7, 8, 9 };
@@ -137,6 +138,7 @@ TEST(BUFFER_EXTEND, BUFFER_TEST) {
         EXPECT_EQ(buffer[i], answer2[i]);
     }
     EXPECT_EQ(vbo.size(), 8);
+    EXPECT_EQ(vbo.capacity(), 8);
 }
 
 int main(int argc, char **argv) {
