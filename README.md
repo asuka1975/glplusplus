@@ -84,3 +84,7 @@ if(std::ifstream fin(fragment_shader_path); fin.good()) {
 }
 program.link();
 ```
+
+# LICENSE
+
+[MIT](LICENSE)
