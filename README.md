@@ -45,3 +45,22 @@ glDrawArrays(GL_XXX, start, count);
 
 // no finalization
 ```
+
+## ・Vertex Array Object
+
+Look at the following code. You can acquire the temporary permission of editing vao.
+Thus, you can control the range of vao editing in a straightforward appearance.
+
+```c++
+gl::vertex_array vao;
+if(auto ctx = vao.get_bind()) {
+    vbo1.bind();
+    vbo1.vertex_pointer(0, ...);
+    vbo1.vertex_pointer(1, ...);
+    vbo2.vertex_pointer(2, ...);
+}
+
+// use vao
+vao.use();
+```
+
