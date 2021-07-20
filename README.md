@@ -64,3 +64,23 @@ if(auto ctx = vao.get_bind()) {
 vao.use();
 ```
 
+## ・Shader
+
+You can define the shader and switch the kind of shader easier.
+You are free to choose between GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER GL_COMPUTE_SHADER and so on, 
+as long as they satisfy the OpenGL specification.
+
+```c++
+gl::shader_program program;
+if(std::ifstream fin(vertex_shader_path); fin.good()) {
+    program.add_shader(std::string { 
+        std::istream_bufiterator<char>{fin},
+        std::istream_bufiterator<char>{}}, GL_VERTEX_SHADER);
+}
+if(std::ifstream fin(fragment_shader_path); fin.good()) {
+    program.add_shader(std::string {
+        std::istream_bufiterator<char>{fin},
+        std::istream_bufiterator<char>{}}, GL_FRAGMENT_SHADER);
+}
+program.link();
+```
