@@ -31,7 +31,7 @@ glDeleteBuffers(1, &vbo);
 ```
 
 Fixing it with gl++, It becomes the code below. 
-The usage of vbo is easier by implicit stride and offset calculation and its deletion.
+The usage of vbo becomes easier by implicit stride and offset calculation and its deletion.
 **Note that the array of vertex data must be defined as interleave storage.**
 ```c++
 // initialize vbo
