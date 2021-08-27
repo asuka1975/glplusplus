@@ -60,6 +60,30 @@ bool gl::shader_program::add_shader(const std::string &src, GLenum type) {
     return true;
 }
 
+bool gl::shader_program::add_shader_binary(const std::string &bin, GLenum type) {
+    if(!enabled()) return false;
+    GLuint shader = glCreateShader(type);
+    auto source = bin.data();
+    GLint length = bin.size();
+    glShaderBinary(1, &shader, GL_SHADER_BINARY_FORMAT_SPIR_V, source, length);
+    glCompileShader(shader);
+
+    GLint status;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+    if(status == GL_FALSE) {
+        GLsizei size; glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &size);
+        std::string log(size, 0);
+        glGetShaderInfoLog(shader, log.length(), &size, log.data());
+        std::cerr << log << std::endl;
+        return false;
+    }
+
+    glAttachShader(handle(), shader);
+    glDeleteShader(shader);
+
+    return true;
+}
+
 bool gl::shader_program::link() {
     if(!enabled()) return false;
     glLinkProgram(handle());
