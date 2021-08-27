@@ -10,11 +10,11 @@
 #endif
 
 #ifndef GLPLUSPLUS_NO_VERTEX_BUFFER
-#include <gl++/vertex_buffer.h.h>
+#include <gl++/vertex_buffer.h>
 #endif
 
 #ifndef GLPLUSPLUS_NO_VERTEX_ARRAY
-#include <gl++/vertex_array.h.h>
+#include <gl++/vertex_array.h>
 #endif
 
 #endif //GL_GL_H
