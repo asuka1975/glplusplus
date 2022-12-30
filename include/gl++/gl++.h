@@ -1,5 +1,5 @@
 //
-// Created by shikina on 2021/08/27.
+// Created by asuka1975 on 2021/08/27.
 //
 
 #ifndef GL_GL_H
